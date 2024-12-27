@@ -6,11 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import source.Utils;
 
+/**
+ * Test class for the Utils class
+ * @author Tim Adcock
+ */
 class UtilsTest {
 
     @org.junit.jupiter.api.Test
     void text_to_hex() {
-        BigInteger    tmp  = Utils.text_to_hex(String.valueOf("Hello"));
+        BigInteger    tmp  = Utils.text_to_hex("Hello");
         assertEquals("96231036770457542450679237503772262400", tmp.toString());
     }
 
