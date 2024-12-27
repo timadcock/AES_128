@@ -257,6 +257,7 @@ public class Utils {
         StringBuilder output = new StringBuilder();
         for (int i = 0; i < encryptedMatrix.length; i++) {
             for (int j = 0; j < encryptedMatrix[0].length; j++) {
+                if (encryptedMatrix[i][j] == 0) break;
                 output.append((char) encryptedMatrix[i][j]);
             }
         }
