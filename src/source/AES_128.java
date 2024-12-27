@@ -23,27 +23,25 @@ public class AES_128 {
         this.make_round_keys();
     }
 
-    public void encrypt(String text) {
-        int[][] plain_text       = Utils.text_to_matrix(text);
-        int[][] encrypted_matrix = this.addRoundKey(plain_text, 0);
+    public String encrypt(String text) {
+        int[][] plain_text = Utils.text_to_matrix(text);
+        int[][] encrypted_matrix = this.addRoundKey(plain_text,
+                                                    this.round_keys[0]
+        );
 
         for (int i = 1; i < 10; i++) {
-            encrypted_matrix = this.round_encrypt(encrypted_matrix, i);
+            encrypted_matrix = this.round_encrypt(encrypted_matrix,
+                                                  this.round_keys[i]
+            );
         }
 
         encrypted_matrix = this.subbyte(encrypted_matrix);
         encrypted_matrix = this.shift_rows(encrypted_matrix);
-        encrypted_matrix = this.addRoundKey(encrypted_matrix, 9);
+        encrypted_matrix = this.addRoundKey(encrypted_matrix,
+                                            this.round_keys[9]
+        );
 
-        for (int i = 0; i < encrypted_matrix.length; i++) {
-            for (int j = 0; j < encrypted_matrix[i].length; j++) {
-                System.out.print(encrypted_matrix[i][j] + " ");
-            }
-            System.out.println();
-        }
-
-
-        //return Utils.matrix_to_string(encrypted_matrix);
+        return Utils.matrix_to_string(encrypted_matrix);
     }
 
 
@@ -59,16 +57,13 @@ public class AES_128 {
 //
 //    }
 
-    private int[][] round_encrypt(int[][] encryptedMatrix, int i) {
+    private int[][] round_encrypt(int[][] encryptedMatrix, int[][] key) {
 
-        int[][] m = this.round_keys[i].clone();
+        encryptedMatrix = this.subbyte(encryptedMatrix);
+        encryptedMatrix = this.shift_rows(encryptedMatrix);
+        encryptedMatrix = this.mix_columns(encryptedMatrix);
 
-        m = this.subbyte(m);
-        m = this.shift_rows(m);
-        m = this.mix_columns(m);
-        m = this.addRoundKey(m, i);
-
-        return m;
+        return this.addRoundKey(encryptedMatrix, key);
 
     }
 
@@ -81,12 +76,12 @@ public class AES_128 {
 
     private int[] mix_single_column(int[] c) {
         int[] new_column = new int[4];
-        int a = c[0] ^ c[1] ^ c[2] ^ c[3];
-        int z = c[0];
-        new_column[0] ^= a ^ this.xtime(c[0] ^ c[1]);
-        new_column[1] ^= a ^ this.xtime(c[1] ^ c[2]);
-        new_column[2] ^= a ^ this.xtime(c[2] ^ c[3]);
-        new_column[3] ^= a ^ this.xtime(c[3] ^ z);
+        int   a          = c[0] ^ c[1] ^ c[2] ^ c[3];
+        int   z          = c[0];
+        new_column[0] = c[0] ^ a ^ this.xtime(c[0] ^ c[1]);
+        new_column[1] = c[1] ^ a ^ this.xtime(c[1] ^ c[2]);
+        new_column[2] = c[2] ^ a ^ this.xtime(c[2] ^ c[3]);
+        new_column[3] = c[3] ^ a ^ this.xtime(c[3] ^ z);
         return new_column;
     }
 
@@ -113,13 +108,13 @@ public class AES_128 {
      * @param k         Index of round key to use.
      * @return Matrix with round key added.
      */
-    private int[][] addRoundKey(int[][] plainText, int k) {
+    private int[][] addRoundKey(int[][] plainText, int[][] k) {
 
         int[][] output = plainText.clone();
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                output[i][j] = output[i][j] ^ this.round_keys[k][i][j];
+                output[i][j] = output[i][j] ^ k[i][j];
             }
         }
         return output;
@@ -133,11 +128,12 @@ public class AES_128 {
         // First round is always the private key
         for (int i = 1; i < 10; i++) {
             this.round_keys[i] = this.make_round(i);
-            // System.out.println(this.matrix_to_string(this.round_keys[i]));
         }
     }
 
     /**
+     * Function to make a single rounds key.
+     *
      * @param i Round number to retrieve previous round key.
      * @return Round key at round i
      */
@@ -184,10 +180,11 @@ public class AES_128 {
      * @return Converted matrix
      */
     private int[][] subbyte(int[][] e) {
-        int[][] output = e.clone();
+        int[][] output = new int[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                output[j][i] = Utils.SUBBYTE[e[i][j]];
+                output[i][j] = Utils.SUBBYTE[e[i][j]];
+
             }
         }
         return output;
@@ -213,12 +210,27 @@ public class AES_128 {
     private int[][] shift_rows(int[][] e) {
         int[][] output = new int[4][4];
 
-        for (int i = 1; i < 4; i++) {
-            output[0][i] = e[i][i];
-            output[1][i] = e[(i + 1) % 4][i];
-            output[2][i] = e[(i + 2) % 4][i];
-            output[3][i] = e[(i + 3) % 4][i];
-        }
+        output[0][1] = e[1][1];
+        output[1][1] = e[2][1];
+        output[2][1] = e[3][1];
+        output[3][1] = e[0][1];
+
+        output[0][2] = e[2][2];
+        output[1][2] = e[3][2];
+        output[2][2] = e[0][2];
+        output[3][2] = e[1][2];
+
+        output[0][3] = e[3][3];
+        output[1][3] = e[0][3];
+        output[2][3] = e[1][3];
+        output[3][3] = e[2][3];
+
+        output[0][0] = e[0][0];
+        output[1][0] = e[1][0];
+        output[2][0] = e[2][0];
+        output[3][0] = e[3][0];
+
+
         return output;
     }
 
