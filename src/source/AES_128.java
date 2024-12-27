@@ -77,7 +77,7 @@ public class AES_128 {
      * Performs the steps needed to decrypt a single round.
      *
      * @param decryptedMatrix Current matrix being worked on.
-     * @param roundKey Key for this round.
+     * @param roundKey        Key for this round.
      * @return Decrypted round matrix.
      */
     private int[][] round_decrypt(int[][] decryptedMatrix, int[][] roundKey) {
@@ -115,7 +115,7 @@ public class AES_128 {
      * Performs the steps needed to encrypt a single round.
      *
      * @param encryptedMatrix Matrix to be encrypted.
-     * @param key Key for this round.
+     * @param key             Key for this round.
      * @return Encrypted matrix.
      */
     private int[][] round_encrypt(int[][] encryptedMatrix, int[][] key) {
