@@ -8,7 +8,7 @@ package source;
 public class AES_128 {
 
     private final int[][][] round_keys  = new int[10][4][4];
-    private       int[][]   private_key = new int[4][4];
+    private       int[][]   private_key;
 
 
     /**
@@ -122,7 +122,7 @@ public class AES_128 {
 
         encryptedMatrix = this.subbyte(encryptedMatrix);
         encryptedMatrix = this.shift_rows(encryptedMatrix);
-        encryptedMatrix = this.mix_columns(encryptedMatrix);
+        this.mix_columns(encryptedMatrix);
 
         return this.addRoundKey(encryptedMatrix, key);
 

@@ -255,10 +255,10 @@ public class Utils {
 
     public static String matrix_to_string(int[][] encryptedMatrix) {
         StringBuilder output = new StringBuilder();
-        for (int i = 0; i < encryptedMatrix.length; i++) {
+        for (int[] matrix : encryptedMatrix) {
             for (int j = 0; j < encryptedMatrix[0].length; j++) {
-                if (encryptedMatrix[i][j] == 0) break;
-                output.append((char) encryptedMatrix[i][j]);
+                if (matrix[j] == 0) break;
+                output.append((char) matrix[j]);
             }
         }
         return output.toString();

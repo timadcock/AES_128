@@ -1,10 +1,11 @@
 package test;
 
+import source.Utils;
+
 import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import source.Utils;
 
 /**
  * Test class for the Utils class
